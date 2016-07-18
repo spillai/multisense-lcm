@@ -25,6 +25,7 @@ struct Driver::Imp {
   std::shared_ptr<lcm::LCM> mSubscribeLcm;
 
   bool mEnableImu;
+  bool mEnableLaser;
   std::string mCommandChannel;
   lcm::Subscription* mCommandSubscription;
 
@@ -116,6 +117,11 @@ enableImu(const bool iVal) {
 }
 
 void Driver::
+enableLaser(const bool iVal) {
+  mImp->mEnableLaser = iVal;
+}
+
+void Driver::
 setCommandChannel(const std::string& iChannel) {
   mImp->mCommandChannel = iChannel;
 }
@@ -184,7 +190,9 @@ start() {
   if (mImp->mEnableImu) {
     if (!mImp->mImu->start()) return false;
   }
-  if (!mImp->mLaser->start()) return false;
+  if (mImp->mEnableLaser) {
+    if (!mImp->mLaser->start()) return false;
+  }
   if (!mImp->mCamera->start()) return false;
 
   return true;
@@ -200,9 +208,12 @@ stop() {
   }
 
   mImp->mCamera->stop();
-  mImp->mLaser->stop();
-  mImp->mImu->stop();
-
+  if (mImp->mEnableLaser) {
+    mImp->mLaser->stop();
+  }
+  if (mImp->mEnableImu) {
+    mImp->mImu->stop();
+  }
   setLedState(false, 0);
 
   std::cout << "driver stopped" << std::endl;

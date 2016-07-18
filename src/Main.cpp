@@ -28,12 +28,12 @@ int main(const int iArgc, const char** iArgv) {
   int outputMode = 0;
   int jpegQuality = 75;
   int zlibCompression = 1;
-  bool useImu = false;
+  bool useImu = false, useLaser = true;
   int desiredWidth = 1024;
   std::string ipAddress("10.66.171.21");
   int mtu = 7200;
   std::string cameraChannel("CAMERA");
-  std::string laserChannel("SCAN");
+  std::string laserChannel("");
   std::string imuChannel("");
   std::string stateChannel("MULTISENSE_STATE");
   std::string commandChannel("MULTISENSE_COMMAND");
@@ -60,6 +60,7 @@ int main(const int iArgc, const char** iArgv) {
           "sensor command input lcm channel");
   opt.add(laserJointName, "n","laser-joint","name of laser joint");
   opt.parse();
+  useLaser = laserChannel.length()>0;
   useImu = imuChannel.length()>0;
 
   // echo settings
@@ -82,7 +83,8 @@ int main(const int iArgc, const char** iArgv) {
   if (lcmUrl.length()>0) std::cout << "  lcm url: " << lcmUrl << std::endl;
   else std::cout << "  lcm url: default" << std::endl;
   std::cout << "  camera output channel: " << cameraChannel << std::endl;
-  std::cout << "  laser output channel: " << laserChannel << std::endl;
+  if (useLaser) std::cout << "  laser output channel: " << laserChannel << std::endl;
+  else std::cout << "  laser disabled" << std::endl;
   if (useImu) std::cout << "  imu output channel: " << imuChannel << std::endl;
   else std::cout << "  imu disabled" << std::endl;
   std::cout << "  state output channel: " << stateChannel << std::endl;
@@ -115,6 +117,7 @@ int main(const int iArgc, const char** iArgv) {
   gDriver->setCameraChannel(cameraChannel);
   gDriver->setStateChannel(stateChannel);
   gDriver->setCommandChannel(commandChannel);
+  gDriver->enableLaser(useLaser);
   gDriver->enableImu(useImu);
 
   // set initial parameters

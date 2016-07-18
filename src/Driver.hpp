@@ -21,6 +21,7 @@ public:
   bool setSubscribeLcm(const std::shared_ptr<lcm::LCM>& iLcm);
 
   void enableImu(const bool iVal);
+  void enableLaser(const bool iVal);
 
   void setCommandChannel(const std::string& iChannel);
   void setCameraChannel(const std::string& iChannel);
