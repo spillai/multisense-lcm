@@ -32,6 +32,7 @@ int main(const int iArgc, const char** iArgv) {
   int desiredWidth = 1024;
   std::string ipAddress("10.66.171.21");
   int mtu = 7200;
+  int cameraFPS = 15;
   std::string cameraChannel("CAMERA");
   std::string laserChannel("");
   std::string imuChannel("");
@@ -53,6 +54,7 @@ int main(const int iArgc, const char** iArgv) {
           "disparity compression (0-9), 0=no compression");
   opt.add(lcmUrl,"u","lcm-url","url of lcm community");
   opt.add(cameraChannel,"c","camera-channel","camera output lcm channel");
+  opt.add(cameraFPS,"f","camera-fps","camera frame rate");
   opt.add(laserChannel,"l","laser-channel","laser output lcm channel");
   opt.add(imuChannel,"i","imu-channel","imu output lcm channel");
   opt.add(stateChannel,"s","state-channel","sensor state output lcm channel");
@@ -125,6 +127,7 @@ int main(const int iArgc, const char** iArgv) {
   gDriver->getCamera()->setJpegQuality(jpegQuality);
   gDriver->getCamera()->setZlibCompression(zlibCompression);
   gDriver->getCamera()->setOutputMode((Camera::OutputMode)outputMode);
+  gDriver->getCamera()->setFrameRate(cameraFPS);
   gDriver->getLaser()->setJointName(laserJointName);
 
   // start driver
